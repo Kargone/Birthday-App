@@ -1,0 +1,8 @@
+Last:
+- Better date input (make it more like other websites seen)
+
+Step by step:
+- "Send now" uses the saved number, not what's typed
+- Adding an existing name silently overwrites that person
+- Feb 29 birthdays break
+- WorkManager times each daily run from when the last one finished.

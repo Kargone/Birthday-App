@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private Map<String, String> birthdayInfo = new HashMap<>();
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/uuuu");
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MM/dd");
+    private static final int NOTIFICATION_REQUEST = 1;
     private EditText nameInput;
     private EditText dateInput;
     private BirthdayAdapter adapter;
@@ -324,9 +326,20 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.notification_setup).setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= 33 &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_REQUEST);
+            } else {
+                BirthdayTexts.showTestNotification(this);
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NOTIFICATION_REQUEST && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            BirthdayTexts.showTestNotification(this);
+        }
     }
 
     private void setupSharedPreferences() {

@@ -15,6 +15,7 @@ public class BirthdayTexts {
     private static final String PHONE_PREFS = "PhonePrefs";
     private static final String MESSAGE_PREFS = "MessagePrefs";
     static final String CHANNEL_ID = "birthday_alerts";
+    private static final int TEST_NOTIFICATION_ID = 0;
 
     static String getPhone(Context context, String name) {
         return context.getSharedPreferences(PHONE_PREFS, Context.MODE_PRIVATE).getString(name, null);
@@ -60,6 +61,23 @@ public class BirthdayTexts {
 
         try {
             NotificationManagerCompat.from(context).notify(name.hashCode(), builder.build());
+        } catch (SecurityException ignored) {}
+    }
+
+    static void showTestNotification(Context context) {
+        Intent openIntent = new Intent(context, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent openPending = PendingIntent.getActivity(context, TEST_NOTIFICATION_ID, openIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification).setContentTitle("Notifications are on!")
+                .setContentText("Birthday reminders will look like this")
+                .setContentIntent(openPending).setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        try {
+            NotificationManagerCompat.from(context).notify(TEST_NOTIFICATION_ID, builder.build());
         } catch (SecurityException ignored) {}
     }
 
